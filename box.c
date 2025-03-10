@@ -2,7 +2,9 @@
 
 // Função para ler os dados do arquivo "PROVAO.TXT"
 void ler_provao(FILE *file, Aluno alunos[], int n) {
+  // Passa pelo arquivo completo
   for (int i = 0; i < n; i++)
+    // Lê e armazena os dados nas variáveis correspondentes
     fscanf(file, "%ld %f %s %s %s", &alunos->inscricao, &alunos->nota,
            alunos->estado, alunos->cidade, alunos->curso);
 }
