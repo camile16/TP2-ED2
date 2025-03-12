@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINES 10000
-#define MAX_LINE_LENGTH 100
+#define MAX_LINES 500000
+#define MAX_LINE_LENGTH 200
 
 // Função para extrair a nota de uma linha
 float extract_grade(const char *line) {
