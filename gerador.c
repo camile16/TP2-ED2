@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINES 500000
-#define MAX_LINE_LENGTH 200
+#define MAX_LINES 10000
+#define MAX_LINE_LENGTH 100
 
 // Função para extrair a nota de uma linha
 float extract_grade(const char *line) {
@@ -36,15 +36,20 @@ int main() {
     int line_count = 0;
 
     // Abrir o arquivo para leitura
-    FILE *input_file = fopen("PROVAO_ALEATORIO.TXT", "r");
+    FILE *input_file = fopen("PROVAO.TXT", "r");
     if (input_file == NULL) {
         perror("Erro ao abrir o arquivo");
+        printf("Certifique-se de que o arquivo 'PROVAO.TXT' está no diretório correto.\n");
         return 1;
     }
 
     // Ler todas as linhas do arquivo
     while (fgets(buffer, MAX_LINE_LENGTH, input_file) != NULL) {
         lines[line_count] = malloc(strlen(buffer) + 1);
+        if (lines[line_count] == NULL) {
+            perror("Erro ao alocar memória");
+            return 1;
+        }
         strcpy(lines[line_count], buffer);
         line_count++;
     }
@@ -53,6 +58,10 @@ int main() {
     // Ordenar crescente por nota
     qsort(lines, line_count, sizeof(char *), compare_asc);
     FILE *asc_file = fopen("PROVAO_CRESCENTE.TXT", "w");
+    if (asc_file == NULL) {
+        perror("Erro ao criar arquivo crescente");
+        return 1;
+    }
     for (int i = 0; i < line_count; i++) {
         fprintf(asc_file, "%s", lines[i]);
     }
@@ -61,6 +70,10 @@ int main() {
     // Ordenar decrescente por nota
     qsort(lines, line_count, sizeof(char *), compare_desc);
     FILE *desc_file = fopen("PROVAO_DECRESCENTE.TXT", "w");
+    if (desc_file == NULL) {
+        perror("Erro ao criar arquivo decrescente");
+        return 1;
+    }
     for (int i = 0; i < line_count; i++) {
         fprintf(desc_file, "%s", lines[i]);
     }
