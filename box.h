@@ -9,14 +9,13 @@
 #define MAX_METODO1 10
 #define MAX_METODO2 19
 
-// Estrutura para armazenar os dados de cada aluno
 typedef struct {
   long inscricao;
   float nota;
   char estado[3];
   char cidade[51];
   char curso[31];
-} Aluno;
+} TipoRegistro;
 
 typedef struct {
     int chave;

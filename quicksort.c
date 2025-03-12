@@ -2,20 +2,13 @@
 #include <stdlib.h> 
 #include <limits.h>
 #include <stdbool.h>
+#include "box.c"
 
 #define TAM 10
 
 FILE *ArqLE;
 FILE *ArqLi;  
 FILE *ArqEi;  
-
-typedef struct {
-  long inscricao;
-  float nota;
-  char estado[3];
-  char cidade[51];
-  char curso[31];
-} TipoRegistro;
 
 // Cria um registro
 TipoRegistro R;
