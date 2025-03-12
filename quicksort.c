@@ -3,10 +3,9 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#define TAM_PIVO 10
+#define TAM 10
 
-typedef int TipoApontador;
-FILE *ArqLES;
+FILE *ArqLE;
 FILE *ArqLi;  
 FILE *ArqEi;  
 
@@ -18,34 +17,40 @@ typedef struct {
   char curso[31];
 } TipoRegistro;
 
-// Cria o pivô
+// Cria um registro
 TipoRegistro R;
 
 typedef struct {
-  TipoRegistro pivo[TAM_PIVO];
+  TipoRegistro pivo[TAM];
 } TipoPivo;
 
-void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Dir) { 
+void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int Esq, int Dir) { 
   int i, j;
-  TipoPivo pivo; // Pivô
+
+  // Cria o pivo
+  TipoPivo pivo;
+
   if (Dir - Esq < 1) return;
+
   PivoVazio(&pivo);
-  Particao (ArqLi, ArqEi, ArqLEs, pivo, Esq, Dir, &i, &j);
+
+  Particao (ArqLi, ArqEi, ArqLE, pivo, Esq, Dir, &i, &j);
+    
+  // Ordena primeiro o subarquivo menor
   if (i - Esq < Dir - i) { 
-    // Ordena primeiro o subarquivo menor
-    QuicksortExterno (ArqLi, ArqEi, ArqLEs, Esq, i);
-    QuicksortExterno (ArqLi, ArqEi, ArqLEs, j, Dir);
+    QuicksortExterno (ArqLi, ArqEi, ArqLE, Esq, i);
+    QuicksortExterno (ArqLi, ArqEi, ArqLE, j, Dir);
   }
   else { 
-    QuicksortExterno (ArqLi, ArqEi, ArqLEs, j, Dir);
-    QuicksortExterno (ArqLi, ArqEi, ArqLEs, Esq, i);
+    QuicksortExterno (ArqLi, ArqEi, ArqLE, j, Dir);
+    QuicksortExterno (ArqLi, ArqEi, ArqLE, Esq, i);
   }
 }
 
 // Lê na parte superior do arquivo
-void LeSup(FILE **ArqLEs, TipoRegistro * UltLido, int *Ls, short *OndeLer) {
-  fseek(*ArqLEs, (*Ls - 1) * sizeof (TipoRegistro), SEEK_SET);
-  fread (UltLido, sizeof(TipoRegistro), 1, *ArqLEs);
+void LeSup(FILE **ArqLE, TipoRegistro *UltLido, int *Ls, short *OndeLer) {
+  fseek(*ArqLE, (*Ls - 1) * sizeof (TipoRegistro), SEEK_SET);
+  fread (UltLido, sizeof(TipoRegistro), 1, *ArqLE);
   (*Ls)--;  
   *OndeLer = false;
 }
@@ -59,15 +64,15 @@ void Leinf(FILE **ArqLi, TipoRegistro *UltLido, int *Li, short *OndeLer) {
 
 // Insere elemento no pivo
 void InserirPivo (TipoPivo *pivo, TipoRegistro *UltLido, int *NRpivo) {
-  /*Insere UltLido de forma ordenada na pivo*/
+  // Insere UltLido de forma ordenada na pivo
   InsereItem (*UltLido, pivo); *NRpivo = ObterNumCelOcupadas (pivo);
 }
 
 // Escreve um elemento na parte superior do arquivo
-void EscreveMax(FILE **ArqLEs, TipoRegistro R, int *Es)
+void EscreveMax(FILE **ArqLE, TipoRegistro R, int *Es)
 {
-  fseek(*ArqLEs, (*Es-1) *sizeof(TipoRegistro), SEEK_SET);
-  fwrite(&R, sizeof(TipoRegistro), 1, *ArqLEs); (*Es)--;
+  fseek(*ArqLE, (*Es-1) *sizeof(TipoRegistro), SEEK_SET);
+  fwrite(&R, sizeof(TipoRegistro), 1, *ArqLE); (*Es)--;
 }
 
 // EscreveMin
@@ -84,10 +89,8 @@ void RetiraMin (TipoPivo *pivo, TipoRegistro *R, int *NRpivo)
     *NRpivo = ObterNumCelOcupadas(pivo);
 }
 
-void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLES,
-              TipoPivo pivo, int Esq, int Dir, int *i, int *j) {
-    int Ls = Dir, Es = Dir, Li = Esq, Ei = Esq,
-        NRpivo = 0, Linf = INT_MIN, Lsup = INT_MAX;
+void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TipoPivo pivo, int Esq, int Dir, int *i, int *j) {
+    int Ls = Dir, Es = Dir, Li = Esq, Ei = Esq, NRpivo = 0, Linf = INT_MIN, Lsup = INT_MAX;
     short OndeLer = true;
     TipoRegistro UltLido, R;
     fseek(*ArqLi, (Li - 1) * sizeof(TipoRegistro), SEEK_SET);
@@ -95,26 +98,26 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLES,
     *i = Esq - 1;
     *j = Dir + 1;
     while (Ls >= Li) {
-        if (NRpivo < TAM_PIVO - 1) {
+        if (NRpivo < TAM - 1) {
             if (OndeLer)
-                LeSup(ArqLES, &UltLido, &Ls, &OndeLer);
+                LeSup(ArqLE, &UltLido, &Ls, &OndeLer);
             else
                 LeInf(ArqLi, &UltLido, &Li, &OndeLer);
             InserirPivo(&pivo, &UltLido, &NRpivo);
             continue;
         }
         if (Ls == Es)
-            LeSup(ArqLES, &UltLido, &Ls, &OndeLer);
+            LeSup(ArqLE, &UltLido, &Ls, &OndeLer);
         else if (Li == Ei)
             LeInf(ArqLi, &UltLido, &Li, &OndeLer);
         else if (OndeLer)
-            LeSup(ArqLES, &UltLido, &Ls, &OndeLer);
+            LeSup(ArqLE, &UltLido, &Ls, &OndeLer);
         else
             LeInf(ArqLi, &UltLido, &Li, &OndeLer);
-
+        
         if (UltLido.nota >= Lsup) {
             *j = Es;
-            EscreveMax(ArqLES, UltLido, &Es);
+            EscreveMax(ArqLE, UltLido, &Es);
             continue;
         }
         if (UltLido.nota < Linf) {
@@ -129,7 +132,7 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLES,
             Linf = R.nota;
         } else {
             RetiraMax(&pivo, &R, &NRpivo);
-            EscreveMax(ArqLES, R, &Es);
+            EscreveMax(ArqLE, R, &Es);
             Lsup = R.nota;
         }
     }
@@ -140,42 +143,45 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLES,
 }
 
 int main(int argc, char *argv[]) {
+    
     ArqLi = fopen("teste.dat", "w");
-    if (ArqLi == NULL) {
-        printf("Arquivo nao pode ser aberto\n");
-        exit(1);
-    }
-    R.nota = 5; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 3; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 10; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 6; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 1; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 7; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
-    R.nota = 4; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        if (ArqLi == NULL) {
+            printf("Arquivo nao pode ser aberto\n");
+            exit(1);
+        }
+        R.nota = 5; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 3; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 10; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 6; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 1; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 7; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
+        R.nota = 4; fwrite(&R, sizeof(TipoRegistro), 1, ArqLi);
     fclose(ArqLi);
- ArqLi = fopen("teste.dat", "r+b");
-    if (ArqLi == NULL) {
-        printf("Arquivo nao pode ser aberto\n");
-        exit(1);
-    }
-    ArqEi = fopen("teste.dat", "r+b");
-    if (ArqEi == NULL) {
-        printf("Arquivo nao pode ser aberto\n");
-        exit(1);
-    }
-    ArqLES = fopen("teste.dat", "r+b");
-    if (ArqLES == NULL) {
-        printf("Arquivo nao pode ser aberto\n");
-        exit(1);
-    }
-    QuicksortExterno(&ArqLi, &ArqEi, &ArqLES, 1, 7);
-    fflush(ArqLi);
-    fclose(ArqEi);
-    fclose(ArqLES);
-    fseek(ArqLi, 0, SEEK_SET);
-    while (fread(&R, sizeof(TipoRegistro), 1, ArqLi)) {
-        printf("Registro-%d\n", R.nota);
-    }
+    
+    ArqLi = fopen("teste.dat", "r+b");
+        if (ArqLi == NULL) {
+            printf("Arquivo nao pode ser aberto\n");
+            exit(1);
+        }
+        ArqEi = fopen("teste.dat", "r+b");
+        if (ArqEi == NULL) {
+            printf("Arquivo nao pode ser aberto\n");
+            exit(1);
+        }
+        ArqLE = fopen("teste.dat", "r+b");
+        if (ArqLE == NULL) {
+            printf("Arquivo nao pode ser aberto\n");
+            exit(1);
+        }
+        QuicksortExterno(&ArqLi, &ArqEi, &ArqLE, 1, 7);
+        fflush(ArqLi);
+        fclose(ArqEi);
+        fclose(ArqLE);
+        fseek(ArqLi, 0, SEEK_SET);
+        while (fread(&R, sizeof(TipoRegistro), 1, ArqLi)) {
+            printf("Registro-%d\n", R.nota);
+        }
     fclose(ArqLi);
+    
     return 0;
 }
