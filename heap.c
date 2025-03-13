@@ -2,17 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-
-typedef struct {
-    int chave;
-    int ativo; // 1: ativo (pode ser usado na run atual), 0: congelado (para próxima run)
-} HeapItem;
-
-typedef struct {
-    HeapItem *itens;
-    int tamanho;
-    int capacidade;
-} FilaPrioridade;
+#include "heap.h"
 
 // Cria a fila (heap) com capacidade definida
 FilaPrioridade* criarFila(int capacidade) {
@@ -160,14 +150,4 @@ void processarItensSubstituicao(int *entrada, int n, int m) {
 
     free(fila->itens);
     free(fila);
-}
-
-int main() {
-    int entrada[] = {5, 1, 9, 3, 4, 6, 8, 2, 7, 0};
-    int n = sizeof(entrada) / sizeof(entrada[0]);
-    int m = 4; // Tamanho do buffer (heap)
-
-    processarItensSubstituicao(entrada, n, m);
-
-    return 0;
 }
