@@ -8,7 +8,6 @@
 
 #define MAX_METODO1 10
 #define MAX_METODO2 19
-#define MAX_METODO3 10
 
 typedef struct {
   long inscricao;
