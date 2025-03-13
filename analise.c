@@ -3,9 +3,9 @@
 int main(int argc, char *argv[static argc]) {  
     int metodo, qntdItens, situacao, chave, p = 0;
 
-    //clock_t tempoIni, tempoFim;
-    //double tempoDeExecucao;
-    //long nTransferenciaPre = 0, nComparacoesPre = 0, nTransferencia = 0, nComparacoes = 0;
+    clock_t tempoIni, tempoFim;
+    double tempoDeExecucao;
+    long nTransferenciaPre = 0, nComparacoesPre = 0, nTransferencia = 0, nComparacoes = 0;
 
     //Verificação da chamada do programa
     if((argc < 4) || (argc > 5)) {
@@ -60,71 +60,19 @@ int main(int argc, char *argv[static argc]) {
     //ESCOLHA DO MÉTODO QUE IRÁ USAR NO PROGRAMA
     switch (metodo) {
 
-        // BUSCA DE ACESSO SEQUENCIAL INDEXADO
+        //INTERCALACAO BALANCEADA 2F
         case 1:
-
             //CASO ARQUIVO ESTEJA DESORDENADO
-            if(situacao == 3) {
-                printf("Não foi possível, arquivo desordenado!\n");
-                return -1;
-            }
-            sequencial(qntdItens, situacao, chave, &nTransferenciaPre, &nTransferencia, &nComparacoes);
             break;
 
-        //ÁRVORE BINÁRIA DE PESQUISA ADEQUADA À MEMÓRIA EXTERNA
+        //INTERCALACAO BALANCEADA F + 1
         case 2:
-
             //DECLARAÇÕES
-            binary(&nTransferenciaPre, &nComparacoesPre);
-            FILE* arqBinary = fopen("binaryTree.bin", "rb");
-            Node node; 
-
-            //VERIFICAÇÃO SE EXISTE O ARQUIVO
-            if(arqBinary == NULL){
-                printf("O arquivo com a árvore estruturada ainda não foi criado!\n");
-                return -1;
-            }
-            fread(&node, sizeof(node), 1, arqBinary);
-
-            if(binaryResearch(chave, arqBinary, node, &nTransferencia, &nComparacoes) != 1) {
-                printf("\nNão há uma chave correspondente no arquivo!\n\n");
-            }
-
-            fclose(arqBinary);
             break;
 
-        //ÁRVORE B
+        //QUICKSORT EXTERNO
         case 3:
             //DECLARAÇÕES
-            b(&nTransferenciaPre, &nComparacoesPre);
-            FILE* arqBTree = fopen("BTree.bin", "rb");
-            if(arqBTree == NULL) {
-                printf("O arquivo da árvore B ainda não foi gerado, por favor gere!\n");
-                return -1;
-            }
-            bResearch(arqBTree, chave, &nTransferencia, &nComparacoes);
-            fclose(arqBTree);
-            break;
-
-        //ÁRVORE B*
-        case 4:
-            //DECLARAÇÕES
-            bstar(&nTransferenciaPre, &nComparacoesPre);
-            ArqBstar arqBstar;
-            arqBstar.Leaf = fopen("Leaf.bin", "rb");
-            if(arqBstar.Leaf == NULL) {
-                printf("O arquivo da árvore B* ainda não foi gerado, por favor gere!!\n");
-                return -1;
-            }
-
-            arqBstar.Internal = fopen("Internal.bin", "rb");
-            if(arqBstar.Internal == NULL) {
-                printf("Arquivo não foi encontrado!\n");
-                return -1;
-            }
-            bStarResearch(& arqBstar, chave, &nTransferencia, &nComparacoes);
-            fclose(arqBstar.Leaf);
-            fclose(arqBstar.Internal);
             break;
 
         default:
@@ -139,19 +87,15 @@ int main(int argc, char *argv[static argc]) {
     switch (metodo)
     {
     case 1:
-        strcpy(metString, "Acesso sequencial indexado");
+        strcpy(metString, "Intercalação Balanceada 2f");
         break;
 
     case 2:
-        strcpy(metString, "Árvore binária de pesquisa adequada à memória externa");
+        strcpy(metString, "Intercalação Balanceada f + 1");
         break;
 
     case 3:
-        strcpy(metString, "Árvore B");
-        break;
-
-    case 4:
-        strcpy(metString, "Árvore B*");
+        strcpy(metString, "Quicksort Externo");
         break;
 
     default:

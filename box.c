@@ -23,4 +23,15 @@ void selecao(Aluno alunos[], int n) {
   FILE *ent10 = fopen("ent1", "w");
 }
 
-void metodo1(Aluno alunos[], int n) {}
+void metodo1(Aluno alunos[], int n) {
+
+}
+
+void metodo2(Aluno alunos[], int n) {
+
+}
+
+void metodo3(Aluno alunos[], int n) {
+
+}
+

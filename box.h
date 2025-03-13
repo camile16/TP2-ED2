@@ -8,6 +8,7 @@
 
 #define MAX_METODO1 10
 #define MAX_METODO2 19
+#define MAX_METODO3 10
 
 typedef struct {
   long inscricao;
@@ -19,14 +20,8 @@ typedef struct {
 
 typedef struct {
     int chave;
-    int ativo; // 1: ativo (pode ser usado na run atual), 0: congelado (para próxima run)
-} HeapItem;
-
-typedef struct {
-    HeapItem *itens;
-    int tamanho;
-    int capacidade;
-} FilaPrioridade;
+    int ativo; // 1: ativo pode ser usado na run atual, 0: congelado (para próxima run)
+};
 
 void ler_provao(FILE *file, Aluno alunos[], int n);
 
