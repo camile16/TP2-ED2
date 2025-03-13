@@ -66,8 +66,8 @@ void Leinf(FILE **ArqLi, TRegistro *UltLido, int *Li, short *OndeLer) {
 }
 
 // Insere elemento no pivo
-void InserirPivo (TPivo *pivo, TRegistro *UltLido, int *NRpivo) {
-  // Insere UltLido de forma ordenada na pivo
+void InserePivo(TPivo *pivo, TRegistro *UltLido, int *NRpivo) {
+  // Insere UltLido de forma ordenada no pivo
   InsereItem (*UltLido, pivo); *NRpivo = pivo->num_cel_ocupadas;
 }
 
@@ -106,7 +106,7 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int
                 LeSup(ArqLE, &UltLido, &Ls, &OndeLer);
             else
                 LeInf(ArqLi, &UltLido, &Li, &OndeLer);
-            InserirPivo(&pivo, &UltLido, &NRpivo);
+            InserePivo(&pivo, &UltLido, &NRpivo);
             continue;
         }
         if (Ls == Es)
@@ -128,7 +128,7 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int
             EscreveMin(ArqEi, UltLido, &Ei);
             continue;
         }
-        InserirPivo(&pivo, &UltLido, &NRpivo);
+        InserePivo(&pivo, &UltLido, &NRpivo);
         if (Ei - esq < dir - Es) {
             RetiraMin(&pivo, &R, &NRpivo);
             EscreveMin(ArqEi, R, &Ei);
