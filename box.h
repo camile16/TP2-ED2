@@ -15,7 +15,7 @@ typedef struct {
   char estado[3];
   char cidade[51];
   char curso[31];
-} TipoRegistro;
+} TRegistro;
 
 typedef struct {
     int chave;
@@ -28,7 +28,7 @@ typedef struct {
     int capacidade;
 } FilaPrioridade;
 
-void ler_provao(FILE *file, Aluno alunos[], int n);
+void ler_provao(FILE *file, TRegistro TRegistros[], int n);
 
 //void metodo1
 
