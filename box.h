@@ -8,8 +8,6 @@
 #include <ctype.h>
 #include <time.h>
 
-#define MAX_METODO1 10
-#define MAX_METODO2 19
 
 typedef struct {
   long inscricao;
@@ -31,6 +29,8 @@ typedef struct {
 void ler_provao(FILE *file, TRegistro TRegistros[], int n);
 
 void escrever_temp_bin(const char *nome_arquivo_txt, const char *nome_arquivo_bin, int quantidade);
+
+
 
 //void metodo1
 

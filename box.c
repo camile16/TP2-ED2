@@ -1,5 +1,25 @@
 #include "box.h"
 
+// Função para trocar dois registros
+void trocar(TRegistro *a, TRegistro *b) {
+  TRegistro temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+// Função para ordenar um vetor de registros usando seleção por substituição
+void selecao_por_substituicao(TRegistro vetor[], int tamanho) {
+  for (int i = 0; i < tamanho - 1; i++) {
+      int min_idx = i;
+      for (int j = i + 1; j < tamanho; j++) {
+          if (vetor[j].nota < vetor[min_idx].nota) {
+              min_idx = j;
+          }
+      }
+      trocar(&vetor[i], &vetor[min_idx]);
+  }
+}
+
 // Função para ler os dados do arquivo "PROVAO.TXT"
 void ler_provao(FILE *file, TRegistro reg[], int n) {
   // Passa pelo arquivo completo

@@ -7,4 +7,6 @@
 #define FITAS_ENTRADA 10
 #define FITAS_SAIDA 10
 
+#define MAX_MEMORIA 10
+
 #endif INTERCALA2F_H

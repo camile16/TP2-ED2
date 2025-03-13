@@ -7,4 +7,6 @@
 #define FITAS_ENTRADA 19
 #define FITAS_SAIDA 1
 
+#define MAX_MEMORIA 19
+
 #endif INTERCALAF+1_H
