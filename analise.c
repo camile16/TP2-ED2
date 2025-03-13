@@ -1,4 +1,6 @@
 #include "box.h"
+#include "intercala2f.h"
+#include "intercalaf+1.h"
 
 int main(int argc, char *argv[]) {
     int metodo, qntdItens, situacao, p = 0;
@@ -60,17 +62,16 @@ int main(int argc, char *argv[]) {
     switch (metodo) {
         // Intercalação Balanceada 2f
         case 1:
-            intercalacao_balanceada_2f("temp.bin", qntdItens, &nTransferencia, &nComparacoes);
             break;
 
         // Intercalação Balanceada f + 1
         case 2:
-            intercalacao_balanceada_f1("temp.bin", qntdItens, &nTransferencia, &nComparacoes);
+            
             break;
 
         // Quicksort Externo
         case 3:
-            quicksort_externo("temp.bin", qntdItens, &nTransferencia, &nComparacoes);
+            
             break;
 
         default:
