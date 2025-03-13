@@ -6,22 +6,21 @@
 
 #define TAM 10
 
-FILE *ArqLE;
+FILE *ArqLE; // Arquivo de Leitura e Escrita
 FILE *ArqLi;  
 FILE *ArqEi;  
 
 // Cria um registro
 TipoRegistro R;
 
+// Estrutura do Pivõ
 typedef struct {
   TipoRegistro pivo[TAM];
 } TipoPivo;
 
 void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int Esq, int Dir) { 
-  int i, j;
-
-  // Cria o pivo
-  TipoPivo pivo;
+  int i, j; // Variáveis auxiliares
+  TipoPivo pivo; // Cria o pivô
 
   if (Dir - Esq < 1) return;
 
