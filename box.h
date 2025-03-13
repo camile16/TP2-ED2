@@ -19,16 +19,16 @@ typedef struct {
 
 typedef struct {
     int chave;
-    int ativo; // 1: ativo (pode ser usado na run atual), 0: congelado (para próxima run)
-} HeapItem;
+    int ativo; // 1: ativo pode ser usado na run atual, 0: congelado (para próxima run)
+};
 
 typedef struct {
-    HeapItem *itens;
-    int tamanho;
-    int capacidade;
-} FilaPrioridade;
+    int alunos[];
+} Aluno;
 
 void ler_provao(FILE *file, TRegistro TRegistros[], int n);
+
+void escrever_temp_bin(const char *nome_arquivo_txt, const char *nome_arquivo_bin, int quantidade);
 
 //void metodo1
 
@@ -36,4 +36,4 @@ void ler_provao(FILE *file, TRegistro TRegistros[], int n);
 
 //void metodo3
 
-#endif // BOX_H
+#endif BOX_H
