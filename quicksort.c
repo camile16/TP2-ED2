@@ -129,11 +129,12 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int
                 EscreveMax(ArqLE, R, &Es);
                 Lsup = R.nota;
             }
-        }
-        while (Ei <= Es) {
-            RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
-            EscreveMin(ArqEi, R, &Ei);
-        }
+    }
+    
+    while (Ei <= Es) {
+        RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
+        EscreveMin(ArqEi, R, &Ei);
+    }
 }
 
 // Ordenação externa pelo método QuickSort
