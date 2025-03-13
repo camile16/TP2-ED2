@@ -1,12 +1,12 @@
 #include "box.h"
 
 // Função para ler os dados do arquivo "PROVAO.TXT"
-void ler_provao(FILE *file, Aluno alunos[], int n) {
+void ler_provao(FILE *file, TRegistro reg[], int n) {
   // Passa pelo arquivo completo
   for (int i = 0; i < n; i++)
     // Lê e armazena os dados nas variáveis correspondentes
-    fscanf(file, "%ld %f %s %s %s", &alunos->inscricao, &alunos->nota,
-           alunos->estado, alunos->cidade, alunos->curso);
+    fscanf(file, "%ld %f %s %s %s", &reg->inscricao, &reg->nota,
+           reg->estado, reg->cidade, reg->curso);
 }
 
 // Função para escrever os registros no arquivo binário temp.bin
@@ -40,7 +40,7 @@ void escrever_temp_bin(const char *nome_arquivo_txt, const char *nome_arquivo_bi
 }
 
 // Função para a técnica de seleção por substituição
-void selecao(Aluno alunos[], int n) {
+void selecao(TRegistro reg[], int n) {
   FILE *ent1 = fopen("ent1", "w");
   FILE *ent2 = fopen("ent1", "w");
   FILE *ent3 = fopen("ent1", "w");
@@ -53,15 +53,15 @@ void selecao(Aluno alunos[], int n) {
   FILE *ent10 = fopen("ent1", "w");
 }
 
-void metodo1(Aluno alunos[], int n) {
+void metodo1(TRegistro reg[], int n) {
 
 }
 
-void metodo2(Aluno alunos[], int n) {
+void metodo2(TRegistro reg[], int n) {
 
 }
 
-void metodo3(Aluno alunos[], int n) {
+void metodo3(TRegistro reg[], int n) {
 
 }
 

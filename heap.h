@@ -1,7 +1,16 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "box.h"
+typedef struct {
+    int chave;
+    int ativo; // 1: ativo (pode ser usado na run atual), 0: congelado (para próxima run)
+} HeapItem;
+
+typedef struct {
+    HeapItem *itens;
+    int tamanho;
+    int capacidade;
+} FilaPrioridade;
 
 //Funções
 FilaPrioridade *criarFila(int capacidade);
@@ -12,4 +21,4 @@ void inserir(FilaPrioridade *fila, int item);
 int removerMenor(FilaPrioridade *fila);
 void processarItens(int *entrada, int n, int m);
 
-#endif // HEAP_H
+#endif HEAP_H

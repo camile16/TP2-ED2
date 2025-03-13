@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
+#include <time.h>
 
 #define MAX_METODO1 10
 #define MAX_METODO2 19
