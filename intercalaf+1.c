@@ -78,6 +78,4 @@ void intercalacao_balanceada_f1(const char *nome_arquivo_bin, int qntdItens, lon
         fclose(fitas_entrada[i]);
     }
     fclose(fita_saida);
-
-    printf("Intercalação Balanceada f + 1 concluída com sucesso!\n");
 }

@@ -83,6 +83,4 @@ void intercalacao_balanceada_2f(const char *nome_arquivo_bin, int qntdItens, lon
     for (int i = 0; i < FITAS_SAIDA; i++) {
         fclose(fitas_saida[i]);
     }
-
-    printf("Intercalação Balanceada 2f concluída com sucesso!\n");
 }
