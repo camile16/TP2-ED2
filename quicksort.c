@@ -35,22 +35,21 @@ void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int esq, int di
     // Condição de parada da recursão (arquivo está ordenado)
     if (dir - esq < 1) return;
 
+    // Realiza a partição do pivo
     Particao(ArqLi, ArqEi, ArqLE, pivo, esq, dir, &i, &j);
 
     // Ordena primeiro o subarquivo menor
-    if (i - esq < dir - j) { 
-        // Subarquivo da esquerda é menor
+    if (i - esq < dir - j) { // Subarquivo da esquerda é menor
         QuicksortExterno (ArqLi, ArqEi, ArqLE, esq, i);
         QuicksortExterno (ArqLi, ArqEi, ArqLE, j, dir);
     }
-    else { 
-        // Subarquivo da direita é menor
+    else { // Subarquivo da direita é menor
         QuicksortExterno (ArqLi, ArqEi, ArqLE, j, dir);
         QuicksortExterno (ArqLi, ArqEi, ArqLE, esq, i);
     }
 }
 
-// Lê na parte superior do arquivo
+// Leitura na parte superior do arquivo
 void LeSup(FILE **ArqLE, TRegistro *UltLido, int *Ls, short *OndeLer) {
   fseek(*ArqLE, (*Ls - 1) * sizeof (TRegistro), SEEK_SET);
   fread (UltLido, sizeof(TRegistro), 1, *ArqLE);
@@ -58,20 +57,20 @@ void LeSup(FILE **ArqLE, TRegistro *UltLido, int *Ls, short *OndeLer) {
   *OndeLer = false;
 }
 
-// Lê na parte inferior do arquivo
+// Leitura na parte inferior do arquivo
 void Leinf(FILE **ArqLi, TRegistro *UltLido, int *Li, short *OndeLer) { 
   fread(UltLido, sizeof (TRegistro), 1, *ArqLi);
   (*Li)++; 
   *OndeLer = true;
 }
 
-// Insere elemento no pivo
+// Inserção de um elemento no pivo
 void InserePivo(TPivo *pivo, TRegistro *UltLido, int *NRpivo) {
   // Insere UltLido de forma ordenada no pivo
   InsereItem (*UltLido, pivo); *NRpivo = pivo->num_cel_ocupadas;
 }
 
-// Escreve um elemento na parte superior do arquivo
+// Escrita de um elemento na parte superior do arquivo
 void EscreveMax(FILE **ArqLE, TRegistro R, int *Es)
 {
   fseek(*ArqLE, (*Es-1) *sizeof(TRegistro), SEEK_SET);
