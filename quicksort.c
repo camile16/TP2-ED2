@@ -57,7 +57,7 @@ void Leinf(FILE **ArqLi, TipoRegistro *UltLido, int *Li, short *OndeLer) {
 // Insere elemento no pivo
 void InserirPivo (TipoPivo *pivo, TipoRegistro *UltLido, int *NRpivo) {
   // Insere UltLido de forma ordenada na pivo
-  InsereItem (*UltLido, pivo); *NRpivo = ObterNumCelOcupadas (pivo);
+  InsereItem (*UltLido, pivo); *NRpivo = ObterNumCelOcupadas(pivo);
 }
 
 // Escreve um elemento na parte superior do arquivo
