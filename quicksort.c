@@ -40,9 +40,10 @@ void Leinf(FILE **ArqLi, TRegistro *ult_lido, int *Li, short *onde_ler) {
 }
 
 // Inserção de um elemento no pivo
-void InserePivo(TPivo *pivo, TRegistro *ult_lido, int *cel_ocupadas_pivo) {
-  // Insere ult_lido de forma ordenada no pivo
-  InsereItem (*ult_lido, pivo); *cel_ocupadas_pivo = pivo->num_cel_ocupadas;
+void InserePivo(TPivo *pivo, TRegistro *ult_lido) {
+    // Insere ult_lido de forma ordenada no pivo
+    InsereItem (*ult_lido, pivo); 
+    pivo->num_cel_ocupadas++;
 }
 
 // Escrita de um elemento na parte superior do arquivo
@@ -66,59 +67,73 @@ void RetiraMin (TPivo *pivo, TRegistro *R, int *cel_ocupadas_pivo)
     *cel_ocupadas_pivo = pivo->num_cel_ocupadas;
 }
 
+// Partição do arquivo
 void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int dir, int *i, int *j) {
     int Ls = dir, Es = dir, Li = esq, Ei = esq, // começa com os ponteiros de leitura e escrita no início e no final do arquivo
         Linf = INT_MIN, Lsup = INT_MAX; // inicializa os limites inferior e superior do pivô
-    short onde_ler = true; //
+    short onde_ler = true; // controla se o registro é lido da parte inferior ('false') ou superior ('true') do arquivo
     TRegistro ult_lido, R; // registros auxiliares
+    
+    int cel_ocupadas_pivo = pivo.num_cel_ocupadas; // ALTERAR 
 
+    // 
     fseek(*ArqLi, (Li - 1) * sizeof(TRegistro), SEEK_SET);
     fseek(*ArqEi, (Ei - 1) * sizeof(TRegistro), SEEK_SET);
     *i = esq - 1;
     *j = dir + 1;
-    while (Ls >= Li) {
-        if (cel_ocupadas_pivo < TAM - 1) {
-            if (onde_ler)
+
+    // Faz partições enquanto Ls e Li não se cruzam
+    while(Ls >= Li) {
+        // Há espaço no pivô
+            if(pivo.num_cel_ocupadas < TAM - 1) {
+                // lê o próximo registro do arquivo
+                if(onde_ler)
+                    LeSup(ArqLE, &ult_lido, &Ls, &onde_ler);
+                else
+                    LeInf(ArqLi, &ult_lido, &Li, &onde_ler);
+                // insere o registro lido no pivô
+                InserePivo(&pivo, &ult_lido);
+                continue;
+            }
+        // Pivô está cheio
+            // Quebra da alternancia de leitura, caso os ponteiros de leitura e escrita se encontrem
+            if (Ls == Es)
+                LeSup(ArqLE, &ult_lido, &Ls, &onde_ler);
+            else if (Li == Ei)
+                LeInf(ArqLi, &ult_lido, &Li, &onde_ler);
+            // Leitura normal, seguindo a alternância
+            else if (onde_ler)
                 LeSup(ArqLE, &ult_lido, &Ls, &onde_ler);
             else
                 LeInf(ArqLi, &ult_lido, &Li, &onde_ler);
-            InserePivo(&pivo, &ult_lido, &cel_ocupadas_pivo);
-            continue;
+            // Escreve elementos nos subarquivos
+            if (ult_lido.nota >= Lsup) {
+                *j = Es;
+                EscreveMax(ArqLE, ult_lido, &Es);
+                continue;
+            }
+            if (ult_lido.nota < Linf) {
+                *i = Ei;
+                EscreveMin(ArqEi, ult_lido, &Ei);
+                continue;
+            }
+
+            InserePivo(&pivo, &ult_lido);
+
+            if (Ei - esq < dir - Es) {
+                RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
+                EscreveMin(ArqEi, R, &Ei);
+                Linf = R.nota;
+            } else {
+                RetiraMax(&pivo, &R, &cel_ocupadas_pivo);
+                EscreveMax(ArqLE, R, &Es);
+                Lsup = R.nota;
+            }
         }
-        if (Ls == Es)
-            LeSup(ArqLE, &ult_lido, &Ls, &onde_ler);
-        else if (Li == Ei)
-            LeInf(ArqLi, &ult_lido, &Li, &onde_ler);
-        else if (onde_ler)
-            LeSup(ArqLE, &ult_lido, &Ls, &onde_ler);
-        else
-            LeInf(ArqLi, &ult_lido, &Li, &onde_ler);
-        
-        if (ult_lido.nota >= Lsup) {
-            *j = Es;
-            EscreveMax(ArqLE, ult_lido, &Es);
-            continue;
-        }
-        if (ult_lido.nota < Linf) {
-            *i = Ei;
-            EscreveMin(ArqEi, ult_lido, &Ei);
-            continue;
-        }
-        InserePivo(&pivo, &ult_lido, &cel_ocupadas_pivo);
-        if (Ei - esq < dir - Es) {
+        while (Ei <= Es) {
             RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
             EscreveMin(ArqEi, R, &Ei);
-            Linf = R.nota;
-        } else {
-            RetiraMax(&pivo, &R, &cel_ocupadas_pivo);
-            EscreveMax(ArqLE, R, &Es);
-            Lsup = R.nota;
         }
-    }
-    while (Ei <= Es) {
-        RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
-        EscreveMin(ArqEi, R, &Ei);
-    }
 }
 
 // Ordenação externa pelo método QuickSort
