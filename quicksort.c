@@ -6,9 +6,9 @@
 
 #define TAM 10 // Tamanho da memória interna disponível
 
-FILE *ArqLE; // Arquivo de Leitura e Escrita
-FILE *ArqLi; // Arquivo de Leitura inferior
-FILE *ArqEi; // Arquivo de Escrita inferior
+FILE *ArqLE; // Arquivo de Leitura Superior e Escrita Superior
+FILE *ArqLi; // Arquivo de Leitura Inferior
+FILE *ArqEi; // Arquivo de Escrita Inferior
 
 // Cria um registro (aluno)
 TRegistro aluno;
@@ -53,18 +53,21 @@ void EscreveMax(FILE **ArqLE, TRegistro R, int *Es)
   fwrite(&R, sizeof(TRegistro), 1, *ArqLE); (*Es)--;
 }
 
-// EscreveMin
-
-void RetiraMax(TPivo *pivo, TRegistro *R, int *cel_ocupadas_pivo)
-{ 
-    RetiraUltimo (pivo, R); 
-    *cel_ocupadas_pivo = pivo->num_cel_ocupadas; 
+// Escrita de um elemento na parte inferior do arquivo
+void EscreveMin (FILE **ArqEi, TRegistro R, int *Ei) { 
+    fwrite (&R, sizeof (TRegistro), 1, *ArqEi); (*Ei)++; 
 }
 
-void RetiraMin (TPivo *pivo, TRegistro *R, int *cel_ocupadas_pivo)
+void RetiraMax(TPivo *pivo, TRegistro *R, int *cel_ocupadas)
+{ 
+    RetiraUltimo (pivo, R); 
+    *cel_ocupadas = pivo->num_cel_ocupadas; 
+}
+
+void RetiraMin (TPivo *pivo, TRegistro *R, int *cel_ocupadas)
 { 
     RetiraPrimeiro(pivo, R); 
-    *cel_ocupadas_pivo = pivo->num_cel_ocupadas;
+    *cel_ocupadas = pivo->num_cel_ocupadas;
 }
 
 // Partição do arquivo
@@ -74,11 +77,13 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int
     short onde_ler = true; // controla se o registro é lido da parte inferior ('false') ou superior ('true') do arquivo
     TRegistro ult_lido, R; // registros auxiliares
     
-    int cel_ocupadas_pivo = pivo.num_cel_ocupadas; // ALTERAR 
+    int cel_ocupadas = pivo.num_cel_ocupadas; // ALTERAR 
 
-    // 
+    // Posiciona os ponteiros de leitura e escrita
     fseek(*ArqLi, (Li - 1) * sizeof(TRegistro), SEEK_SET);
     fseek(*ArqEi, (Ei - 1) * sizeof(TRegistro), SEEK_SET);
+
+    // Inicializa os valores de i e j, que indicam os limites dos subarquivos
     *i = esq - 1;
     *j = dir + 1;
 
@@ -121,18 +126,18 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, TPivo pivo, int esq, int
             InserePivo(&pivo, &ult_lido);
 
             if (Ei - esq < dir - Es) {
-                RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
+                RetiraMin(&pivo, &R, &cel_ocupadas);
                 EscreveMin(ArqEi, R, &Ei);
                 Linf = R.nota;
             } else {
-                RetiraMax(&pivo, &R, &cel_ocupadas_pivo);
+                RetiraMax(&pivo, &R, &cel_ocupadas);
                 EscreveMax(ArqLE, R, &Es);
                 Lsup = R.nota;
             }
     }
     
     while (Ei <= Es) {
-        RetiraMin(&pivo, &R, &cel_ocupadas_pivo);
+        RetiraMin(&pivo, &R, &cel_ocupadas);
         EscreveMin(ArqEi, R, &Ei);
     }
 }
@@ -145,7 +150,7 @@ void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int esq, int di
     TPivo pivo;
     InicializaPivo(&pivo);
 
-    // Condição de parada da recursão (arquivo está ordenado)
+    // Condição de parada da recursão
     if (dir - esq < 1) return;
 
     // Realiza a partição do pivo
@@ -164,17 +169,25 @@ void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int esq, int di
 
 int main(int argc, char *argv[]) {
     
-    ArqLi = fopen("teste.dat", "w");
+    ArqLi = fopen("teste.dat", "wb");
         if (ArqLi == NULL) {
             printf("Arquivo nao pode ser aberto\n");
             exit(1);
         }
-       // ...
+
+    aluno.nota = 5; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 3; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 10;fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 6; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 1; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 7; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+    aluno.nota = 4; fwrite(&aluno, sizeof (TRegistro), 1, ArqLi);
+
     fclose(ArqLi);
     
     ArqLi = fopen("teste.dat", "r+b");
         if (ArqLi == NULL) {
-            printf("Arquivo nao pode ser aberto\n");
+            printf("Arquivo não pode ser aberto!\n");
             exit(1);
         }
         ArqEi = fopen("teste.dat", "r+b");
@@ -187,14 +200,18 @@ int main(int argc, char *argv[]) {
             printf("Arquivo nao pode ser aberto\n");
             exit(1);
         }
+       
         QuicksortExterno(&ArqLi, &ArqEi, &ArqLE, 1, 7);
+        
         fflush(ArqLi);
         fclose(ArqEi);
         fclose(ArqLE);
+
         fseek(ArqLi, 0, SEEK_SET);
         while (fread(&R, sizeof(TRegistro), 1, ArqLi)) {
             printf("aluno-%d\n", R.nota);
         }
+        
     fclose(ArqLi);
     
     return 0;
