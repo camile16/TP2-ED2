@@ -1,34 +1,37 @@
-#include "quicksort_externo.h"
+#include "box.h"
+#include "box.c"
+#include "quicksort.c"
 
-void FAVazia(TArea *Area) {
+
+void FAVazia(TPivo *Area) {
     int i;
-    Area->NumCelOcupadas = 0;
+    Area->num_cel_ocupadas = 0;
     Area->Primeiro = -1;
     Area->Ultimo = -1;
     Area->CelulasDisp = 0;
-    for (i = 0; i < TAMAREA; i++) {
+    for (i = 0; i < TAM; i++) {
         Area->Itens[i].Ant = -1;
         Area->Itens[i].Prox = i + 1;
     }
 }
 
-int ObterNumCelOcupadas(TArea* Area) {
-    return (Area->NumCelOcupadas);
+int Obternum_cel_ocupadas(TPivo* Area) {
+    return (Area->num_cel_ocupadas);
 }
 
-void InsereItem(registro Item, TArea *Area, int* comp) {
+void InsereItem(TRegistro Item, TPivo *Area, int* comp) {
     int pos, disp, IndiceInsercao;
     (*comp)++;
-    if (Area->NumCelOcupadas == TAMAREA) {
+    if (Area->num_cel_ocupadas == TAM) {
         printf("Tentativa de inserção em memoria cheia.\n");
         return;
     }
     disp = Area->CelulasDisp;
     Area->CelulasDisp = Area->Itens[Area->CelulasDisp].Prox;
     Area->Itens[disp].Item = Item;
-    Area->NumCelOcupadas++;
+    Area->num_cel_ocupadas++;
     (*comp)++;
-    if (Area->NumCelOcupadas == 1) {
+    if (Area->num_cel_ocupadas == 1) {
         /*Inserção do primeiro item*/
         Area->Primeiro = disp;
         Area->Ultimo = Area->Primeiro;
@@ -69,11 +72,11 @@ void InsereItem(registro Item, TArea *Area, int* comp) {
     /*Inserção realizada no meio da área*/
 }
 
-void RetiraPrimeiro(TArea *Area, registro* Item, int* comp) {
+void RetiraPrimeiro(TPivo *Area, TRegistro* Item, int* comp) {
 
     Apontador ProxTmp;
     (*comp)++;
-    if (Area->NumCelOcupadas == 0) {
+    if (Area->num_cel_ocupadas == 0) {
         /*Área Vazia*/
         //printf("Erro. Memoria vazia\n");
         return;
@@ -84,15 +87,15 @@ void RetiraPrimeiro(TArea *Area, registro* Item, int* comp) {
     Area->CelulasDisp = Area->Primeiro;
     Area->Primeiro = ProxTmp;
     (*comp)++;
-    if ((unsigned int) Area->Primeiro < TAMAREA)
+    if ((unsigned int) Area->Primeiro < TAM)
         Area->Itens[Area->Primeiro].Ant = -1;
-    Area->NumCelOcupadas--;
+    Area->num_cel_ocupadas--;
 }
 
-void RetiraUltimo(TArea* Area, registro *Item, int *comp) {
+void RetiraUltimo(TPivo* Area, TRegistro *Item, int *comp) {
     Apontador AntTmp;
     (*comp)++;
-    if (Area->NumCelOcupadas == 0) {
+    if (Area->num_cel_ocupadas == 0) {
         /*Area vazia*/
         printf("Erro. Memoria vazia\n");
         return;
@@ -103,20 +106,20 @@ void RetiraUltimo(TArea* Area, registro *Item, int *comp) {
     Area->CelulasDisp = Area->Ultimo;
     Area->Ultimo = AntTmp;
     (*comp)++;
-    if ((unsigned int) Area->Ultimo < TAMAREA)
+    if ((unsigned int) Area->Ultimo < TAM)
         Area->Itens[Area->Ultimo].Prox = -1;
-    Area->NumCelOcupadas--;
+    Area->num_cel_ocupadas--;
 
 }
 
-void ImprimeArea(TArea* Area) {
+void ImprimeArea(TPivo* Area) {
     int pos;
-    if (Area->NumCelOcupadas <= 0) {
+    if (Area->num_cel_ocupadas <= 0) {
         printf("Memoria vazia\n");
         return;
     }
     printf("Memoria\n");
-    printf("Numero de celulas ocupadas: %d\n", Area->NumCelOcupadas);
+    printf("Numero de celulas ocupadas: %d\n", Area->num_cel_ocupadas);
     pos = Area->Primeiro;
     while (pos != -1) {
         printf("%f ", Area->Itens[pos].Item.nota);
@@ -126,54 +129,54 @@ void ImprimeArea(TArea* Area) {
 
 /*Procedimentos utilizados pela Partição do QuickSort*/
 
-void LeSup(FILE **ArqLEs, TReg* UltLido, int* Ls, short *OndeLer, int* transf) {
+void LeSup(FILE **ArqLEs, TRegistro* UltLido, int* Ls, short *OndeLer, int* transf) {
     //assert(ArqLEs);
-    fseek(*ArqLEs, (*Ls - 1) * sizeof (registro), SEEK_SET);
-    fread(UltLido, sizeof (registro), 1, *ArqLEs);
+    fseek(*ArqLEs, (*Ls - 1) * sizeof (TRegistro), SEEK_SET);
+    fread(UltLido, sizeof (TRegistro), 1, *ArqLEs);
     (*transf)++;
     (*Ls)--;
     *OndeLer = false;
 }
 
-void LeInf(FILE** ArqLi, TReg* UltLido, int* Li, short* OndeLer, int* transf) {
+void LeInf(FILE** ArqLi, TRegistro* UltLido, int* Li, short* OndeLer, int* transf) {
     //assert(LeInf);
-    fread(UltLido, sizeof (TReg), 1, *ArqLi);
+    fread(UltLido, sizeof (TRegistro), 1, *ArqLi);
     (*transf)++;
     (*Li)++;
     *OndeLer = true;
 }
 
-void InserirArea(TArea* Area, TReg* UltLido, int* NRArea, int* comp) {
+void InserirArea(TPivo* Area, TRegistro* UltLido, int* NRArea, int* comp) {
     /*Insere UltLido de forma ordenada na área*/
     InsereItem(*UltLido, Area, comp);
-    *NRArea = ObterNumCelOcupadas(Area);
+    *NRArea = Obternum_cel_ocupadas(Area);
 }
 
-void EscreveMax(FILE **ArqLEs, TReg R, int *Es, int* transf) {
+void EscreveMax(FILE **ArqLEs, TRegistro R, int *Es, int* transf) {
     //assert(ArqLEs);
-    fseek(*ArqLEs, (*Es - 1) * sizeof (TReg), SEEK_SET);
-    fwrite(&R, sizeof (TReg), 1, *ArqLEs);
+    fseek(*ArqLEs, (*Es - 1) * sizeof (TRegistro), SEEK_SET);
+    fwrite(&R, sizeof (TRegistro), 1, *ArqLEs);
     (*transf)++;
     (*Es)--;
 }
 
-void EscreveMin(FILE **ArqEi, TReg R, int *Ei, int* transf) {
-    fwrite(&R, sizeof (TReg), 1, *ArqEi);
+void EscreveMin(FILE **ArqEi, TRegistro R, int *Ei, int* transf) {
+    fwrite(&R, sizeof (TRegistro), 1, *ArqEi);
     (*transf)++;
     (*Ei)++;
 }
 
-void RetiraMax(TArea* Area, TReg *R, int *NRArea, int* comp) {
+void RetiraMax(TPivo* Area, TRegistro *R, int *NRArea, int* comp) {
     RetiraUltimo(Area, R, comp);
-    *NRArea = ObterNumCelOcupadas(Area);
+    *NRArea = Obternum_cel_ocupadas(Area);
 }
 
-void RetiraMin(TArea* Area, TReg* R, int *NRArea, int* comp) {
+void RetiraMin(TPivo* Area, TRegistro* R, int *NRArea, int* comp) {
     RetiraPrimeiro(Area, R, comp);
-    *NRArea = ObterNumCelOcupadas(Area);
+    *NRArea = Obternum_cel_ocupadas(Area);
 }
 
-void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TArea Area, int Esq, int Dir, int*i, int*j, int* transf, int* comp) {
+void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo Area, int Esq, int Dir, int*i, int*j, int* transf, int* comp) {
     assert(ArqLi);
     assert(ArqEi);
     assert(ArqLEs);
@@ -185,15 +188,15 @@ void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TArea Area, int Esq, in
     int Linf = INT_MIN;
     int Lsup = INT_MAX;
     short OndeLer = true;
-    TReg UltLido, R;
+    TRegistro UltLido, R;
 
-    fseek(*ArqLi, (Li - 1) * sizeof (TReg), SEEK_SET);
-    fseek(*ArqEi, (Ei - 1) * sizeof (TReg), SEEK_SET);
+    fseek(*ArqLi, (Li - 1) * sizeof (TRegistro), SEEK_SET);
+    fseek(*ArqEi, (Ei - 1) * sizeof (TRegistro), SEEK_SET);
     *i = Esq - 1;
     *j = Dir + 1;
     while (Ls >= Li) {
         (*comp)++;
-        if (NRArea < TAMAREA - 1) {
+        if (NRArea < TAM - 1) {
             if (OndeLer)
                 LeSup(ArqLEs, &UltLido, &Ls, &OndeLer, transf);
             else
@@ -250,7 +253,7 @@ void QuickSortExterno(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, int Esq, int Di
     assert(ArqEi);
     assert(ArqLEs);
     int i, j;
-    TArea Area; /*Área de armazenamento interna*/
+    TPivo Area; /*Área de armazenamento interna*/
     if (Dir - Esq < 1)
         return;
     FAVazia(&Area);
