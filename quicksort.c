@@ -167,6 +167,7 @@ void QuicksortExterno (FILE **ArqLi, FILE **ArqEi, FILE **ArqLE, int esq, int di
     }
 }
 
+// Função principal
 int main(int argc, char *argv[]) {
     
     ArqLi = fopen("teste.dat", "wb");
@@ -208,8 +209,8 @@ int main(int argc, char *argv[]) {
         fclose(ArqLE);
 
         fseek(ArqLi, 0, SEEK_SET);
-        while (fread(&R, sizeof(TRegistro), 1, ArqLi)) {
-            printf("aluno-%d\n", R.nota);
+        while (fread(&aluno, sizeof(TRegistro), 1, ArqLi)) {
+            printf("aluno-%d\n", aluno.nota);
         }
         
     fclose(ArqLi);
