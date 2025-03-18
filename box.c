@@ -48,7 +48,7 @@ void escrever_temp_bin(const char *nome_arquivo_txt, const char *nome_arquivo_bi
     int contador = 0;
 
     // Ler os registros do arquivo texto e escrever no arquivo binário
-    while(contador < quantidade && fscanf(arquivo_txt, "%d %f %2s %50s %30s",
+    while(contador < quantidade && fscanf(arquivo_txt, "%ld %f %2s %50s %30s",
                                           &reg.inscricao, &reg.nota,
                                           reg.estado, reg.cidade, reg.curso) == 5) {
         fwrite(&reg, sizeof(TRegistro), 1, arquivo_bin);

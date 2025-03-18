@@ -33,7 +33,7 @@ void LeSup(FILE **ArqLE, TRegistro *ult_lido, int *Ls, short *onde_ler) {
 }
 
 // Leitura na parte inferior do arquivo
-void Leinf(FILE **ArqLi, TRegistro *ult_lido, int *Li, short *onde_ler) { 
+void LeInf(FILE **ArqLi, TRegistro *ult_lido, int *Li, short *onde_ler) { 
   fread(ult_lido, sizeof (TRegistro), 1, *ArqLi);
   (*Li)++; 
   *onde_ler = true;
@@ -60,7 +60,7 @@ void EscreveMin (FILE **ArqEi, TRegistro R, int *Ei) {
 
 void RetiraMax(TPivo *pivo, TRegistro *R, int *cel_ocupadas)
 { 
-    RetiraUltimo (pivo, R); 
+    RetiraUltimo(pivo, R); 
     *cel_ocupadas = pivo->num_cel_ocupadas; 
 }
 
@@ -210,7 +210,7 @@ int main(int argc, char *argv[]) {
 
         fseek(ArqLi, 0, SEEK_SET);
         while (fread(&aluno, sizeof(TRegistro), 1, ArqLi)) {
-            printf("aluno-%d\n", aluno.nota);
+            printf("aluno-%f\n", aluno.nota);
         }
         
     fclose(ArqLi);

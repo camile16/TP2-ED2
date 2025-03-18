@@ -8,7 +8,6 @@
 #include <ctype.h>
 #include <time.h>
 
-
 typedef struct {
   long inscricao;
   float nota;
@@ -20,10 +19,10 @@ typedef struct {
 typedef struct {
     int chave;
     int ativo; // 1: ativo pode ser usado na run atual, 0: congelado (para próxima run)
-};
+} teste;
 
 typedef struct {
-    int alunos[];
+    int alunos;
 } Aluno;
 
 void ler_provao(FILE *file, TRegistro TRegistros[], int n);
@@ -38,4 +37,4 @@ void escrever_temp_bin(const char *nome_arquivo_txt, const char *nome_arquivo_bi
 
 //void metodo3
 
-#endif BOX_H
+#endif //BOX_H
