@@ -2,132 +2,131 @@
 #include "box.c"
 #include "quicksort.c"
 
-
-void FAVazia(TPivo *Area) {
+void InicializaPivo(TPivo *pivo) {
     int i;
-    Area->num_cel_ocupadas = 0;
-    Area->Primeiro = -1;
-    Area->Ultimo = -1;
-    Area->CelulasDisp = 0;
+    pivo->num_cel_ocupadas = 0;
+    pivo->Primeiro = -1;
+    pivo->Ultimo = -1;
+    pivo->CelulasDisp = 0;
     for (i = 0; i < TAM; i++) {
-        Area->Itens[i].Ant = -1;
-        Area->Itens[i].Prox = i + 1;
+        pivo->Itens[i].Ant = -1;
+        pivo->Itens[i].Prox = i + 1;
     }
 }
 
-int Obternum_cel_ocupadas(TPivo* Area) {
-    return (Area->num_cel_ocupadas);
+int ObtemNumCelOcupadas(TPivo* pivo) {
+    return (pivo->num_cel_ocupadas);
 }
 
-void InsereItem(TRegistro Item, TPivo *Area, int* comp) {
+void InsereItem(TRegistro Item, TPivo *pivo, int* comp) {
     int pos, disp, IndiceInsercao;
     (*comp)++;
-    if (Area->num_cel_ocupadas == TAM) {
+    if (pivo->num_cel_ocupadas == TAM) {
         printf("Tentativa de inserção em memoria cheia.\n");
         return;
     }
-    disp = Area->CelulasDisp;
-    Area->CelulasDisp = Area->Itens[Area->CelulasDisp].Prox;
-    Area->Itens[disp].Item = Item;
-    Area->num_cel_ocupadas++;
+    disp = pivo->CelulasDisp;
+    pivo->CelulasDisp = pivo->Itens[pivo->CelulasDisp].Prox;
+    pivo->Itens[disp].Item = Item;
+    pivo->num_cel_ocupadas++;
     (*comp)++;
-    if (Area->num_cel_ocupadas == 1) {
+    if (pivo->num_cel_ocupadas == 1) {
         /*Inserção do primeiro item*/
-        Area->Primeiro = disp;
-        Area->Ultimo = Area->Primeiro;
-        Area->Itens[Area->Primeiro].Prox = -1;
-        Area->Itens[Area->Primeiro].Ant = -1;
+        pivo->Primeiro = disp;
+        pivo->Ultimo = pivo->Primeiro;
+        pivo->Itens[pivo->Primeiro].Prox = -1;
+        pivo->Itens[pivo->Primeiro].Ant = -1;
         return;
     }
-    pos = Area->Primeiro;
+    pos = pivo->Primeiro;
     (*comp)++;
-    if (Item.nota < Area->Itens[pos].Item.nota) {
+    if (Item.nota < pivo->Itens[pos].Item.nota) {
         /*Inserção na primeira posição*/
-        Area->Itens[disp].Ant = -1;
-        Area->Itens[disp].Prox = pos;
-        Area->Itens[pos].Ant = disp;
-        Area->Primeiro = disp;
+        pivo->Itens[disp].Ant = -1;
+        pivo->Itens[disp].Prox = pos;
+        pivo->Itens[pos].Ant = disp;
+        pivo->Primeiro = disp;
         return;
     }
-    IndiceInsercao = Area->Itens[pos].Prox;
-    while (IndiceInsercao != -1 && Area->Itens[IndiceInsercao].Item.nota < Item.nota) {
+    IndiceInsercao = pivo->Itens[pos].Prox;
+    while (IndiceInsercao != -1 && pivo->Itens[IndiceInsercao].Item.nota < Item.nota) {
         (*comp)++;
         pos = IndiceInsercao;
-        IndiceInsercao = Area->Itens[pos].Prox;
+        IndiceInsercao = pivo->Itens[pos].Prox;
     }
     (*comp)++;
     if (IndiceInsercao == -1) {
         /*Inserção realizada na ultima posição*/
-        Area->Itens[disp].Ant = pos;
-        Area->Itens[disp].Prox = -1;
-        Area->Itens[pos].Prox = disp;
-        Area->Ultimo = disp;
+        pivo->Itens[disp].Ant = pos;
+        pivo->Itens[disp].Prox = -1;
+        pivo->Itens[pos].Prox = disp;
+        pivo->Ultimo = disp;
         return;
     }
-    Area->Itens[disp].Ant = pos;
-    Area->Itens[disp].Prox = Area->Itens[pos].Prox;
-    Area->Itens[pos].Prox = disp;
-    pos = Area->Itens[disp].Prox;
-    Area->Itens[pos].Ant = disp;
+    pivo->Itens[disp].Ant = pos;
+    pivo->Itens[disp].Prox = pivo->Itens[pos].Prox;
+    pivo->Itens[pos].Prox = disp;
+    pos = pivo->Itens[disp].Prox;
+    pivo->Itens[pos].Ant = disp;
     /*Inserção realizada no meio da área*/
 }
 
-void RetiraPrimeiro(TPivo *Area, TRegistro* Item, int* comp) {
+void RetiraPrimeiro(TPivo *pivo, TRegistro* Item, int* comp) {
 
     Apontador ProxTmp;
     (*comp)++;
-    if (Area->num_cel_ocupadas == 0) {
+    if (pivo->num_cel_ocupadas == 0) {
         /*Área Vazia*/
         //printf("Erro. Memoria vazia\n");
         return;
     }
-    *Item = Area->Itens[Area->Primeiro].Item;
-    ProxTmp = Area->Itens[Area->Primeiro].Prox;
-    Area->Itens[Area->Primeiro].Prox = Area->CelulasDisp;
-    Area->CelulasDisp = Area->Primeiro;
-    Area->Primeiro = ProxTmp;
+    *Item = pivo->Itens[pivo->Primeiro].Item;
+    ProxTmp = pivo->Itens[pivo->Primeiro].Prox;
+    pivo->Itens[pivo->Primeiro].Prox = pivo->CelulasDisp;
+    pivo->CelulasDisp = pivo->Primeiro;
+    pivo->Primeiro = ProxTmp;
     (*comp)++;
-    if ((unsigned int) Area->Primeiro < TAM)
-        Area->Itens[Area->Primeiro].Ant = -1;
-    Area->num_cel_ocupadas--;
+    if ((unsigned int) pivo->Primeiro < TAM)
+        pivo->Itens[pivo->Primeiro].Ant = -1;
+    pivo->num_cel_ocupadas--;
 }
 
-void RetiraUltimo(TPivo* Area, TRegistro *Item, int *comp) {
+void RetiraUltimo(TPivo* pivo, TRegistro *Item, int *comp) {
     Apontador AntTmp;
     (*comp)++;
-    if (Area->num_cel_ocupadas == 0) {
-        /*Area vazia*/
+    if (pivo->num_cel_ocupadas == 0) {
+        /*pivo vazia*/
         printf("Erro. Memoria vazia\n");
         return;
     }
-    *Item = Area->Itens[Area->Ultimo].Item;
-    AntTmp = Area->Itens[Area->Ultimo].Ant;
-    Area->Itens[Area->Ultimo].Prox = Area->CelulasDisp;
-    Area->CelulasDisp = Area->Ultimo;
-    Area->Ultimo = AntTmp;
+    *Item = pivo->Itens[pivo->Ultimo].Item;
+    AntTmp = pivo->Itens[pivo->Ultimo].Ant;
+    pivo->Itens[pivo->Ultimo].Prox = pivo->CelulasDisp;
+    pivo->CelulasDisp = pivo->Ultimo;
+    pivo->Ultimo = AntTmp;
     (*comp)++;
-    if ((unsigned int) Area->Ultimo < TAM)
-        Area->Itens[Area->Ultimo].Prox = -1;
-    Area->num_cel_ocupadas--;
+    if ((unsigned int) pivo->Ultimo < TAM)
+        pivo->Itens[pivo->Ultimo].Prox = -1;
+    pivo->num_cel_ocupadas--;
 
 }
 
-void ImprimeArea(TPivo* Area) {
+void ImprimePivo(TPivo* pivo) {
     int pos;
-    if (Area->num_cel_ocupadas <= 0) {
+    if (pivo->num_cel_ocupadas <= 0) {
         printf("Memoria vazia\n");
         return;
     }
     printf("Memoria\n");
-    printf("Numero de celulas ocupadas: %d\n", Area->num_cel_ocupadas);
-    pos = Area->Primeiro;
+    printf("Numero de celulas ocupadas: %d\n", pivo->num_cel_ocupadas);
+    pos = pivo->Primeiro;
     while (pos != -1) {
-        printf("%f ", Area->Itens[pos].Item.nota);
-        pos = Area->Itens[pos].Prox;
+        printf("%f ", pivo->Itens[pos].Item.nota);
+        pos = pivo->Itens[pos].Prox;
     }
 }
 
-/*Procedimentos utilizados pela Partição do QuickSort*/
+// Funções utilizadas na partição do QuickSort
 
 void LeSup(FILE **ArqLEs, TRegistro* UltLido, int* Ls, short *OndeLer, int* transf) {
     //assert(ArqLEs);
@@ -146,10 +145,10 @@ void LeInf(FILE** ArqLi, TRegistro* UltLido, int* Li, short* OndeLer, int* trans
     *OndeLer = true;
 }
 
-void InserirArea(TPivo* Area, TRegistro* UltLido, int* NRArea, int* comp) {
+void InsereNoPivo(TPivo* pivo, TRegistro* UltLido, int* NRpivo, int* comp) {
     /*Insere UltLido de forma ordenada na área*/
-    InsereItem(*UltLido, Area, comp);
-    *NRArea = Obternum_cel_ocupadas(Area);
+    InsereItem(*UltLido, pivo, comp);
+    *NRpivo = ObtemNumCelOcupadas(pivo);
 }
 
 void EscreveMax(FILE **ArqLEs, TRegistro R, int *Es, int* transf) {
@@ -166,17 +165,17 @@ void EscreveMin(FILE **ArqEi, TRegistro R, int *Ei, int* transf) {
     (*Ei)++;
 }
 
-void RetiraMax(TPivo* Area, TRegistro *R, int *NRArea, int* comp) {
-    RetiraUltimo(Area, R, comp);
-    *NRArea = Obternum_cel_ocupadas(Area);
+void RetiraMax(TPivo* pivo, TRegistro *R, int *NRpivo, int* comp) {
+    RetiraUltimo(pivo, R, comp);
+    *NRpivo = ObtemNumCelOcupadas(pivo);
 }
 
-void RetiraMin(TPivo* Area, TRegistro* R, int *NRArea, int* comp) {
-    RetiraPrimeiro(Area, R, comp);
-    *NRArea = Obternum_cel_ocupadas(Area);
+void RetiraMin(TPivo* pivo, TRegistro* R, int *NRpivo, int* comp) {
+    RetiraPrimeiro(pivo, R, comp);
+    *NRpivo = ObtemNumCelOcupadas(pivo);
 }
 
-void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo Area, int Esq, int Dir, int*i, int*j, int* transf, int* comp) {
+void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo pivo, int Esq, int Dir, int*i, int*j, int* transf, int* comp) {
     assert(ArqLi);
     assert(ArqEi);
     assert(ArqLEs);
@@ -184,7 +183,7 @@ void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo Area, int Esq, in
     int Es = Dir;
     int Li = Esq;
     int Ei = Esq;
-    int NRArea = 0;
+    int NRpivo = 0;
     int Linf = INT_MIN;
     int Lsup = INT_MAX;
     short OndeLer = true;
@@ -196,13 +195,13 @@ void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo Area, int Esq, in
     *j = Dir + 1;
     while (Ls >= Li) {
         (*comp)++;
-        if (NRArea < TAM - 1) {
+        if (NRpivo < TAM - 1) {
             if (OndeLer)
                 LeSup(ArqLEs, &UltLido, &Ls, &OndeLer, transf);
             else
                 LeInf(ArqLi, &UltLido, &Li, &OndeLer, transf);
 
-            InserirArea(&Area, &UltLido, &NRArea, comp);
+            InsereNoPivo(&pivo, &UltLido, &NRpivo, comp);
             continue;
         }
         (*comp)++;
@@ -229,21 +228,21 @@ void Particao(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, TPivo Area, int Esq, in
             EscreveMin(ArqEi, UltLido, &Ei, transf);
             continue;
         }
-        InserirArea(&Area, &UltLido, &NRArea, comp);
+        InsereNoPivo(&pivo, &UltLido, &NRpivo, comp);
         (*comp)++;
         if (Ei - Esq < Dir - Es) {
-            RetiraMin(&Area, &R, &NRArea, comp);
+            RetiraMin(&pivo, &R, &NRpivo, comp);
             EscreveMin(ArqEi, R, &Ei, transf);
             Linf = R.nota;
         } else {
-            RetiraMax(&Area, &R, &NRArea, comp);
+            RetiraMax(&pivo, &R, &NRpivo, comp);
             EscreveMax(ArqLEs, R, &Es, comp);
             Lsup = R.nota;
         }
     }
     while (Ei <= Es) {
         (*comp)++;
-        RetiraMin(&Area, &R, &NRArea, comp);
+        RetiraMin(&pivo, &R, &NRpivo, comp);
         EscreveMin(ArqEi, R, &Ei, comp);
     }
 }
@@ -253,11 +252,11 @@ void QuickSortExterno(FILE** ArqLi, FILE** ArqEi, FILE** ArqLEs, int Esq, int Di
     assert(ArqEi);
     assert(ArqLEs);
     int i, j;
-    TPivo Area; /*Área de armazenamento interna*/
+    TPivo pivo; /*Área de armazenamento interna*/
     if (Dir - Esq < 1)
         return;
-    FAVazia(&Area);
-    Particao(ArqLi, ArqEi, ArqLEs, Area, Esq, Dir, &i, &j, transf, comp);
+    InicializaPivo(&pivo);
+    Particao(ArqLi, ArqEi, ArqLEs, pivo, Esq, Dir, &i, &j, transf, comp);
     if (i - Esq < Dir - j) {
         /*Ordena primeiro o subarquivo menor */
         QuickSortExterno(ArqLi, ArqEi, ArqLEs, Esq, i, transf, comp);
