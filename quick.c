@@ -2,7 +2,6 @@
 #include "box.c"
 #include "quicksort.c"
 
-
 void FAVazia(TPivo *Area) {
     int i;
     Area->num_cel_ocupadas = 0;

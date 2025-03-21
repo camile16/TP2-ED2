@@ -17,6 +17,7 @@ TRegistro aluno;
 typedef struct {
   TRegistro pivo[TAM];
   int num_cel_ocupadas;
+  
 } TPivo;
 
 // Inicialização do pivô
