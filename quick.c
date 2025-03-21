@@ -2,11 +2,7 @@
 #include "box.c"
 #include "quicksort.c"
 
-<<<<<<< HEAD
 void FAVazia(TPivo *Area) {
-=======
-void InicializaPivo(TPivo *pivo) {
->>>>>>> 8882b1962e9a48c3222fca183070e4551fc734b3
     int i;
     pivo->num_cel_ocupadas = 0;
     pivo->Primeiro = -1;
